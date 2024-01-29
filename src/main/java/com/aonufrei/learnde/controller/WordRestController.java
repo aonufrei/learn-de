@@ -4,6 +4,7 @@ import com.aonufrei.learnde.dto.WordOut;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ public class WordRestController {
 	}
 
 	@GetMapping("{id}")
-	private ResponseEntity<WordOut> getById() {
+	private ResponseEntity<WordOut> getById(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(null);
 	}
 
@@ -31,8 +32,8 @@ public class WordRestController {
 		return ResponseEntity.ok(null);
 	}
 
-	@PutMapping
-	private ResponseEntity<WordOut> update() {
+	@PutMapping("{id}")
+	private ResponseEntity<WordOut> update(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(null);
 	}
 
