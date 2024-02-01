@@ -2,7 +2,7 @@ package com.aonufrei.learnde.controller;
 
 import com.aonufrei.learnde.dto.TopicIn;
 import com.aonufrei.learnde.dto.TopicOut;
-import org.springframework.http.ResponseEntity;
+import com.aonufrei.learnde.services.TopicService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,36 +12,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/topics")
 public class TopicRestController {
 
+	private final TopicService service;
+
+	public TopicRestController(TopicService service) {
+		this.service = service;
+	}
+
 	@GetMapping
-	private ResponseEntity<List<TopicOut>> getAll() {
-		return ResponseEntity.ok(Collections.emptyList());
+	private List<TopicOut> getAll() {
+		return service.getAll();
 	}
 
 	@GetMapping("{id}")
-	private ResponseEntity<TopicOut> getById(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(null);
+	private TopicOut getById(@PathVariable("id") Long id) {
+		return service.getById(id);
 	}
 
 	@PostMapping
-	private ResponseEntity<TopicOut> create(@RequestBody TopicIn topicIn) {
-		return ResponseEntity.ok(null);
+	private TopicOut create(@RequestBody TopicIn topicIn) {
+		return service.create(topicIn);
 	}
 
 	@PutMapping("{id}")
-	private ResponseEntity<TopicOut> update(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(null);
+	private TopicOut update(@PathVariable("id") Long id, @RequestBody TopicIn topicIn) {
+		return service.update(id, topicIn);
 	}
 
-	@DeleteMapping
-	private ResponseEntity<Boolean> delete() {
-		return ResponseEntity.ok(true);
+	@DeleteMapping("{id}")
+	private Boolean delete(@PathVariable("id") Long id) {
+		return service.delete(id);
 	}
 
 }
