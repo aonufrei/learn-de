@@ -3,10 +3,10 @@ package com.aonufrei.learnde.controller;
 import com.aonufrei.learnde.exceptions.FailedValidationException;
 import com.aonufrei.learnde.exceptions.TopicNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@ControllerAdvice
 public class ExceptionController {
 
 	@ExceptionHandler({TopicNotFoundException.class, FailedValidationException.class})

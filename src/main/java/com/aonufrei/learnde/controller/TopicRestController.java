@@ -3,6 +3,7 @@ package com.aonufrei.learnde.controller;
 import com.aonufrei.learnde.dto.TopicIn;
 import com.aonufrei.learnde.dto.TopicOut;
 import com.aonufrei.learnde.services.TopicService;
+import com.aonufrei.learnde.utils.ValidationUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,11 +37,13 @@ public class TopicRestController {
 
 	@PostMapping
 	private TopicOut create(@RequestBody TopicIn topicIn) {
+		ValidationUtils.validate(topicIn);
 		return service.create(topicIn);
 	}
 
 	@PutMapping("{id}")
 	private TopicOut update(@PathVariable("id") Long id, @RequestBody TopicIn topicIn) {
+		ValidationUtils.validate(topicIn);
 		return service.update(id, topicIn);
 	}
 

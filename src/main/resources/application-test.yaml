@@ -1,9 +1,10 @@
 spring:
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
-    ddl-auto: create-drop
+    hibernate:
+      ddl-auto: create-drop
   datasource:
-    url: jdbc:sqlite:memory:myDb
+    url: jdbc:sqlite:test.db
     driver-class-name: org.sqlite.JDBC
 
 logging:
