@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TopicService {
@@ -27,7 +26,7 @@ public class TopicService {
 	public List<TopicOut> getAll() {
 		return topicRepository.findAll().stream()
 				.map(TopicService::toTopicOut)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public Topic getModelById(Long id) {
@@ -36,8 +35,7 @@ public class TopicService {
 	}
 
 	public TopicOut getById(Long id) {
-		return topicRepository.findById(id).map(TopicService::toTopicOut)
-				.orElseThrow(() -> createNotFoundByIdError(id));
+		return toTopicOut(getModelById(id));
 	}
 
 	public TopicOut create(TopicIn ti) {
@@ -57,13 +55,17 @@ public class TopicService {
 
 	@Transactional
 	public boolean delete(Long id) {
-		if (topicRepository.existsById(id)) {
+		if (exists(id)) {
 			log.info("Found topic with id [{}]", id);
 			topicRepository.deleteById(id);
 			return true;
 		}
 		log.info("Topic with id [{}] was not found", id);
 		return false;
+	}
+
+	public boolean exists(Long id) {
+		return topicRepository.existsById(id);
 	}
 
 	public static TopicOut toTopicOut(Topic t) {

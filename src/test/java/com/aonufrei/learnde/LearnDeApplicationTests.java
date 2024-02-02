@@ -3,6 +3,7 @@ package com.aonufrei.learnde;
 import com.aonufrei.learnde.dto.TopicIn;
 import com.aonufrei.learnde.model.Topic;
 import com.aonufrei.learnde.repository.TopicRepository;
+import com.aonufrei.learnde.repository.WordRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 		locations = "classpath:application-test.yaml")
 class LearnDeApplicationTests {
 
-	private static final String ROOT_PATH = "/api/v1/topics";
+	private static final String TOPIC_ROOT_PATH = "/api/v1/topics";
 
 	@Autowired
 	private MockMvc mvc;
@@ -43,6 +44,9 @@ class LearnDeApplicationTests {
 
 	@Autowired
 	private TopicRepository topicRepository;
+
+	@Autowired
+	private WordRepository wordRepository;
 
 	@Test
 	public void testHealthEndpoint() throws Exception {
@@ -126,25 +130,29 @@ class LearnDeApplicationTests {
 
 	}
 
+	@Test
+	public void testWordCrud() {
+	}
+
 	public MockHttpServletRequestBuilder getAllTopics() {
-		return get(ROOT_PATH);
+		return get(TOPIC_ROOT_PATH);
 	}
 
 	public MockHttpServletRequestBuilder getCreateTopicRequest(TopicIn ti) throws JsonProcessingException {
 		String request = mapper.writeValueAsString(ti);
-		return post(ROOT_PATH).contentType("application/json").content(request);
+		return post(TOPIC_ROOT_PATH).contentType("application/json").content(request);
 	}
 
 	public MockHttpServletRequestBuilder getUpdateTopicRequest(Long id, TopicIn ti) throws JsonProcessingException {
 		String request = mapper.writeValueAsString(ti);
-		return put(ROOT_PATH + "/" + id).contentType("application/json").content(request);
+		return put(TOPIC_ROOT_PATH + "/" + id).contentType("application/json").content(request);
 	}
 
 	public MockHttpServletRequestBuilder getDeleteTopicRequest(Long id) {
-		return delete(ROOT_PATH + "/" + id);
+		return delete(TOPIC_ROOT_PATH + "/" + id);
 	}
 
 	public MockHttpServletRequestBuilder getTopicByIdRequest(Long id) {
-		return get(ROOT_PATH + "/" + id);
+		return get(TOPIC_ROOT_PATH + "/" + id);
 	}
 }
