@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,6 +41,7 @@ public class TopicService {
 
 	public TopicOut create(TopicIn ti) {
 		Topic topic = toTopic(ti);
+		topic.setVersion(LocalDateTime.now());
 		Topic saved = topicRepository.save(topic);
 		return toTopicOut(saved);
 	}
@@ -49,6 +51,7 @@ public class TopicService {
 		Topic modelById = getModelById(id);
 		modelById.setName(ti.name());
 		modelById.setDescription(ti.description());
+		modelById.setVersion(LocalDateTime.now());
 		Topic updated = topicRepository.save(modelById);
 		return toTopicOut(updated);
 	}

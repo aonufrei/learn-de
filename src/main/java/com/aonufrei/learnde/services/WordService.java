@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,6 +40,7 @@ public class WordService {
 
 	public WordOut create(WordIn wi) {
 		Word word = toWord(wi);
+		word.setVersion(LocalDateTime.now());
 		Word saved = wordRepository.save(word);
 		return toWordOut(saved);
 	}
@@ -50,6 +52,7 @@ public class WordService {
 		word.setText(wi.text());
 		word.setArticle(wi.article());
 		word.setTranslation(wi.translation());
+		word.setVersion(LocalDateTime.now());
 		Word updated = wordRepository.save(word);
 		return toWordOut(updated);
 	}

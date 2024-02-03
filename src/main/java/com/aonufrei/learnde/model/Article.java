@@ -1,5 +1,8 @@
 package com.aonufrei.learnde.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+
 public enum Article {
 	DER(0),
 	DIE(1),
@@ -11,7 +14,8 @@ public enum Article {
 		this.code = code;
 	}
 
-	private int getCode() {
+	@JsonValue
+	public int getCode() {
 		return code;
 	}
 }
