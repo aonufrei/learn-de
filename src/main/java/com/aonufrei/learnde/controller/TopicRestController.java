@@ -4,6 +4,7 @@ import com.aonufrei.learnde.dto.TopicIn;
 import com.aonufrei.learnde.dto.TopicOut;
 import com.aonufrei.learnde.services.TopicService;
 import com.aonufrei.learnde.services.ValidationService;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class TopicRestController {
 	}
 
 	@GetMapping
+	@PermitAll
 	private List<TopicOut> getAll() {
 		return service.getAll();
 	}

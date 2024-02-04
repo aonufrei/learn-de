@@ -4,6 +4,7 @@ import com.aonufrei.learnde.dto.WordIn;
 import com.aonufrei.learnde.dto.WordOut;
 import com.aonufrei.learnde.services.ValidationService;
 import com.aonufrei.learnde.services.WordService;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class WordRestController {
 	}
 
 	@GetMapping
+	@PermitAll
 	private List<WordOut> getAll() {
 		return service.getAll();
 	}
