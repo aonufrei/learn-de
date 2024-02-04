@@ -1,5 +1,6 @@
 package com.aonufrei.learnde.utils;
 
+import com.aonufrei.learnde.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -12,9 +13,12 @@ public class IntegrationTestUtils {
 
 	private final String rootPath;
 
-	public IntegrationTestUtils(ObjectMapper objectMapper, String rootPath) {
+	private final String authToken;
+
+	public IntegrationTestUtils(ObjectMapper objectMapper, String rootPath, String authToken) {
 		this.objectMapper = objectMapper;
 		this.rootPath = rootPath;
+		this.authToken = authToken;
 	}
 
 	public <T> MockHttpServletRequestBuilder getAllRequest() {
@@ -23,20 +27,27 @@ public class IntegrationTestUtils {
 
 	public <T> MockHttpServletRequestBuilder getCreateRequest(T ti) throws JsonProcessingException {
 		String request = objectMapper.writeValueAsString(ti);
-		return post(rootPath).contentType("application/json").content(request);
+		return post(rootPath).contentType("application/json")
+				.header("Authorization", authToken)
+				.content(request);
 	}
 
 	public <T> MockHttpServletRequestBuilder getUpdateRequest(Long id, T ti) throws JsonProcessingException {
 		String request = objectMapper.writeValueAsString(ti);
-		return put(rootPath + "/" + id).contentType("application/json").content(request);
+		return put(rootPath + "/" + id).contentType("application/json")
+				.header("Authorization", authToken)
+				.content(request);
 	}
 
 	public <T> MockHttpServletRequestBuilder getDeleteRequest(Long id) {
-		return delete(rootPath + "/" + id);
+		return delete(rootPath + "/" + id).header("Authorization", authToken);
 	}
 
 	public <T> MockHttpServletRequestBuilder getByIdRequest(Long id) {
-		return get(rootPath + "/" + id);
+		return get(rootPath + "/" + id).header("Authorization", authToken);
 	}
 
+	public static String createToken(User user) {
+		return "Bearer " + user.getUsername();
+	}
 }

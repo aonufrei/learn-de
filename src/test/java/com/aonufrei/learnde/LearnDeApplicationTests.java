@@ -4,10 +4,13 @@ import com.aonufrei.learnde.dto.TopicIn;
 import com.aonufrei.learnde.dto.WordIn;
 import com.aonufrei.learnde.model.Article;
 import com.aonufrei.learnde.model.Topic;
+import com.aonufrei.learnde.model.User;
 import com.aonufrei.learnde.model.Word;
 import com.aonufrei.learnde.repository.TopicRepository;
+import com.aonufrei.learnde.repository.UserRepository;
 import com.aonufrei.learnde.repository.WordRepository;
 import com.aonufrei.learnde.services.TopicService;
+import com.aonufrei.learnde.services.UserService;
 import com.aonufrei.learnde.utils.IntegrationTestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -59,20 +62,35 @@ class LearnDeApplicationTests {
 	@Autowired
 	private TopicService topicService;
 
+	@Autowired
+	private UserRepository userRepository;
+
+	private final User testAdmin = User.builder()
+			.name("Admin")
+			.username("admin")
+			.password("admin")
+			.role("ROLE_ADMIN")
+			.build();
+
+	private final String testAuthToken = IntegrationTestUtils.createToken(testAdmin);
+
 	@BeforeEach
 	public void tearDown() {
 		topicRepository.deleteAll();
 		wordRepository.deleteAll();
+		// Create admin user for tests
+		userRepository.deleteAll();
+		userRepository.save(testAdmin);
 	}
 
 	@Test
 	public void testHealthEndpoint() throws Exception {
-		mvc.perform(get("/api/v1/health")).andExpect(status().isOk());
+		mvc.perform(get("/health")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void testTopicCrud() throws Exception {
-		var integrationUtils = new IntegrationTestUtils(mapper, TOPIC_ROOT_PATH);
+		var integrationUtils = new IntegrationTestUtils(mapper, TOPIC_ROOT_PATH, testAuthToken);
 
 		var topic1 = new TopicIn("Topic 1", "Description");
 		var topic2 = new TopicIn("Topic 2", "Description");
@@ -151,7 +169,7 @@ class LearnDeApplicationTests {
 
 	@Test
 	public void testWordCrud() throws Exception {
-		var integrationUtils = new IntegrationTestUtils(mapper, WORD_ROOT_PATH);
+		var integrationUtils = new IntegrationTestUtils(mapper, WORD_ROOT_PATH, testAuthToken);
 
 		var topicIn1 = new TopicIn("Topic 1", "First topic");
 		var topicIn2 = new TopicIn("Topic 2", "Second topic");
@@ -219,4 +237,5 @@ class LearnDeApplicationTests {
 				.andExpect(status().isOk())
 				.andExpect(content().string("[]"));
 	}
+
 }
