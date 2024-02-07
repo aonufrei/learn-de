@@ -36,7 +36,7 @@ public class TokenFilter extends OncePerRequestFilter {
 		var token = servletRequest.getHeader("Authorization");
 		if (token != null && token.startsWith(TOKEN_PREFIX)) {
 			token = token.substring(TOKEN_PREFIX.length());
-			UserDetails details = processToken(token);
+			UserDetails details = authService.getUserDetails(token);
 			var upAuth = new UsernamePasswordAuthenticationToken(
 					details.getUsername(),
 					details.getPassword(),
@@ -46,10 +46,6 @@ public class TokenFilter extends OncePerRequestFilter {
 			SecurityContextHolder.getContext().setAuthentication(upAuth);
 		}
 		filterChain.doFilter(servletRequest, servletResponse);
-	}
-
-	private UserDetails processToken(String token) {
-		return authService.loadUserByUsername(token);
 	}
 
 }

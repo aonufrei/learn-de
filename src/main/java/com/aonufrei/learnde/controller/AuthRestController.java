@@ -2,6 +2,7 @@ package com.aonufrei.learnde.controller;
 
 import com.aonufrei.learnde.dto.LoginIn;
 import com.aonufrei.learnde.dto.UserIn;
+import com.aonufrei.learnde.services.AuthService;
 import com.aonufrei.learnde.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/auth")
 public class AuthRestController {
 
+	private final AuthService authService;
 	private final AuthenticationManager authManager;
 	private final UserService userService;
 
-	public AuthRestController(AuthenticationManager authManager, UserService userService) {
+	public AuthRestController(AuthService authService,
+							  AuthenticationManager authManager,
+							  UserService userService) {
+		this.authService = authService;
 		this.authManager = authManager;
 		this.userService = userService;
 	}
@@ -32,7 +37,7 @@ public class AuthRestController {
 					li.username(),
 					li.password()
 			));
-			return ResponseEntity.ok("Bearer " + li.username());
+			return ResponseEntity.ok("Bearer " + authService.createToken(li.username()));
 		} catch (BadCredentialsException ex) {
 			System.out.println("Failed to login");
 		}

@@ -1,10 +1,12 @@
+jwt:
+  secret: ${JWT_SECRET}
 spring:
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:sqlite:/home/aonufrei/Work/learn-de-db
+    url: jdbc:sqlite:${DBPATH}
     driver-class-name: org.sqlite.JDBC
 
 logging:

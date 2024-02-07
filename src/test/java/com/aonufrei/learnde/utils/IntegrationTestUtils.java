@@ -1,6 +1,5 @@
 package com.aonufrei.learnde.utils;
 
-import com.aonufrei.learnde.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -47,7 +46,4 @@ public class IntegrationTestUtils {
 		return get(rootPath + "/" + id).header("Authorization", authToken);
 	}
 
-	public static String createToken(User user) {
-		return "Bearer " + user.getUsername();
-	}
 }

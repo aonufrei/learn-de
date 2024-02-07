@@ -1,21 +1,29 @@
 package com.aonufrei.learnde.services;
 
 import com.aonufrei.learnde.repository.UserRepository;
+import com.aonufrei.learnde.security.JwtUtil;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 
 @Service
 public class AuthService implements UserDetailsService {
 
+
+	private final Duration TOKEN_EXPIRATION = Duration.of(7, ChronoUnit.DAYS);
+	private final JwtUtil jwtUtil;
 	private final UserRepository userRepository;
 
-	public AuthService(UserRepository userRepository) {
+	public AuthService(JwtUtil jwtUtil, UserRepository userRepository) {
+		this.jwtUtil = jwtUtil;
 		this.userRepository = userRepository;
 	}
 
@@ -40,4 +48,14 @@ public class AuthService implements UserDetailsService {
 			}
 		};
 	}
+
+	public String createToken(String username) {
+		return jwtUtil.createToken(username, LocalDateTime.now().plus(TOKEN_EXPIRATION));
+	}
+
+	public UserDetails getUserDetails(String token) {
+		String username = jwtUtil.getUsernameFromJwt(token);
+		return loadUserByUsername(username);
+	}
+
 }

@@ -1,3 +1,5 @@
+jwt:
+  secret: testtesttesttesttesttest
 spring:
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect

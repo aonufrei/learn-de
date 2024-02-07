@@ -9,8 +9,8 @@ import com.aonufrei.learnde.model.Word;
 import com.aonufrei.learnde.repository.TopicRepository;
 import com.aonufrei.learnde.repository.UserRepository;
 import com.aonufrei.learnde.repository.WordRepository;
+import com.aonufrei.learnde.services.AuthService;
 import com.aonufrei.learnde.services.TopicService;
-import com.aonufrei.learnde.services.UserService;
 import com.aonufrei.learnde.utils.IntegrationTestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -65,14 +65,15 @@ class LearnDeApplicationTests {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private AuthService authService;
+
 	private final User testAdmin = User.builder()
 			.name("Admin")
 			.username("admin")
 			.password("admin")
 			.role("ROLE_ADMIN")
 			.build();
-
-	private final String testAuthToken = IntegrationTestUtils.createToken(testAdmin);
 
 	@BeforeEach
 	public void tearDown() {
@@ -90,7 +91,8 @@ class LearnDeApplicationTests {
 
 	@Test
 	public void testTopicCrud() throws Exception {
-		var integrationUtils = new IntegrationTestUtils(mapper, TOPIC_ROOT_PATH, testAuthToken);
+		var integrationUtils = new IntegrationTestUtils(mapper, TOPIC_ROOT_PATH,
+				"Bearer " + authService.createToken(testAdmin.getUsername()));
 
 		var topic1 = new TopicIn("Topic 1", "Description");
 		var topic2 = new TopicIn("Topic 2", "Description");
@@ -169,7 +171,8 @@ class LearnDeApplicationTests {
 
 	@Test
 	public void testWordCrud() throws Exception {
-		var integrationUtils = new IntegrationTestUtils(mapper, WORD_ROOT_PATH, testAuthToken);
+		var integrationUtils = new IntegrationTestUtils(mapper, WORD_ROOT_PATH,
+				"Bearer " + authService.createToken(testAdmin.getUsername()));
 
 		var topicIn1 = new TopicIn("Topic 1", "First topic");
 		var topicIn2 = new TopicIn("Topic 2", "Second topic");
