@@ -19,10 +19,10 @@ public class ExceptionController {
 		return ResponseEntity.badRequest().body(ex.getMessage());
 	}
 
-//	@ExceptionHandler({Exception.class})
-//	public ResponseEntity<String> handleOtherException(Exception ex) {
-//		log.error("Request failed with exception", ex);
-//		return ResponseEntity.internalServerError().build();
-//	}
+	@ExceptionHandler({Exception.class})
+	public ResponseEntity<String> handleOtherException(Exception ex) {
+		log.error("Request failed with exception", ex);
+		return ResponseEntity.internalServerError().build();
+	}
 
 }
