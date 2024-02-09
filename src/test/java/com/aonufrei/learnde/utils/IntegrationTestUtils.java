@@ -1,5 +1,7 @@
 package com.aonufrei.learnde.utils;
 
+import com.aonufrei.learnde.dto.LoginIn;
+import com.aonufrei.learnde.dto.UserIn;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -35,6 +37,18 @@ public class IntegrationTestUtils {
 		String request = objectMapper.writeValueAsString(ti);
 		return put(rootPath + "/" + id).contentType("application/json")
 				.header("Authorization", authToken)
+				.content(request);
+	}
+
+	public <T> MockHttpServletRequestBuilder getRegisterRequest(UserIn ui) throws JsonProcessingException {
+		String request = objectMapper.writeValueAsString(ui);
+		return post("/api/v1/auth/register").contentType("application/json")
+				.content(request);
+	}
+
+	public <T> MockHttpServletRequestBuilder getLoginRequest(LoginIn li) throws JsonProcessingException {
+		String request = objectMapper.writeValueAsString(li);
+		return post("/api/v1/auth/login").contentType("application/json")
 				.content(request);
 	}
 

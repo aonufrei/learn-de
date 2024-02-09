@@ -1,7 +1,6 @@
 package com.aonufrei.learnde;
 
-import com.aonufrei.learnde.dto.TopicIn;
-import com.aonufrei.learnde.dto.WordIn;
+import com.aonufrei.learnde.dto.*;
 import com.aonufrei.learnde.model.Article;
 import com.aonufrei.learnde.model.Topic;
 import com.aonufrei.learnde.model.User;
@@ -11,7 +10,10 @@ import com.aonufrei.learnde.repository.UserRepository;
 import com.aonufrei.learnde.repository.WordRepository;
 import com.aonufrei.learnde.services.AuthService;
 import com.aonufrei.learnde.services.TopicService;
+import com.aonufrei.learnde.services.WordService;
 import com.aonufrei.learnde.utils.IntegrationTestUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Assertions;
@@ -25,10 +27,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -61,6 +65,9 @@ class LearnDeApplicationTests {
 
 	@Autowired
 	private TopicService topicService;
+
+	@Autowired
+	private WordService wordService;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -239,6 +246,60 @@ class LearnDeApplicationTests {
 		mvc.perform(integrationUtils.getAllRequest())
 				.andExpect(status().isOk())
 				.andExpect(content().string("[]"));
+	}
+
+	@Test
+	public void testGetWordsByTopic() throws Exception {
+		TopicOut topic1 = topicService.create(new TopicIn("Topic 1", ""));
+		TopicOut topic2 = topicService.create(new TopicIn("Topic 2", ""));
+		Map<Long, List<WordOut>> wordsByTopic = Stream.of(
+				wordService.create(new WordIn(topic1.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic1.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic1.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic2.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic2.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic2.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic2.id(), "asdfsadf", Article.DER, "sdfasdf")),
+				wordService.create(new WordIn(topic2.id(), "asdfsadf", Article.DER, "sdfasdf"))
+		).collect(Collectors.groupingBy(WordOut::topicId));
+
+		Set<WordOut> expectedResult1 = new HashSet<>(wordsByTopic.get(topic1.id()));
+		Set<WordOut> expectedResult2 = new HashSet<>(wordsByTopic.get(topic2.id()));
+
+		mvc.perform(get("/api/v1/topics/" + topic1.id() + "/words"))
+				.andExpect(status().isOk())
+				.andExpect(compareObjects(expectedResult1, this::parseToWordSet));
+		mvc.perform(get("/api/v1/topics/" + topic2.id() + "/words"))
+				.andExpect(status().isOk())
+				.andExpect(compareObjects(expectedResult2, this::parseToWordSet));
+	}
+
+	@Test
+	public void testAuth() throws Exception {
+		var integrationUtils = new IntegrationTestUtils(mapper, WORD_ROOT_PATH, "");
+		var user1 = new UserIn("Testtttt", "trasdfasd", "21sd3wefsdff");
+		mvc.perform(integrationUtils.getRegisterRequest(user1))
+				.andExpect(status().isOk());
+		var login = new LoginIn(user1.username(), user1.password());
+		mvc.perform(integrationUtils.getLoginRequest(login))
+				.andExpect(status().isOk());
+	}
+
+	private <T> ResultMatcher compareObjects(T expected, Function<String, T> parseFunc) {
+		return result -> {
+			String content = result.getResponse().getContentAsString();
+			T parsedContent = parseFunc.apply(content);
+			Assertions.assertEquals(expected, parsedContent);
+		};
+	}
+
+	private Set<WordOut> parseToWordSet(String content) {
+		try {
+			return mapper.readValue(content, new TypeReference<>() {
+			});
+		} catch (JsonProcessingException e) {
+			return null;
+		}
 	}
 
 }

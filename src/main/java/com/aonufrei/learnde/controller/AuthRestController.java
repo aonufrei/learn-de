@@ -4,6 +4,8 @@ import com.aonufrei.learnde.dto.LoginIn;
 import com.aonufrei.learnde.dto.UserIn;
 import com.aonufrei.learnde.services.AuthService;
 import com.aonufrei.learnde.services.UserService;
+import com.aonufrei.learnde.services.ValidationService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,22 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/auth")
+@AllArgsConstructor
 public class AuthRestController {
 
 	private final AuthService authService;
 	private final AuthenticationManager authManager;
 	private final UserService userService;
 
-	public AuthRestController(AuthService authService,
-							  AuthenticationManager authManager,
-							  UserService userService) {
-		this.authService = authService;
-		this.authManager = authManager;
-		this.userService = userService;
-	}
-
 	@PostMapping("login")
 	public ResponseEntity<String> login(@RequestBody LoginIn li) {
+		ValidationService.validate(li);
 		try {
 			authManager.authenticate(new UsernamePasswordAuthenticationToken(
 					li.username(),
@@ -46,6 +42,7 @@ public class AuthRestController {
 
 	@PostMapping("register")
 	public String register(@RequestBody UserIn ui) {
+		ValidationService.validate(ui);
 		userService.createUser(ui);
 		return "ok";
 	}

@@ -38,6 +38,12 @@ public class WordService {
 		return toWordOut(getModelById(id));
 	}
 
+	public List<WordOut> getByTopic(Long topicId) {
+		return wordRepository.findAllByTopicId(topicId).stream()
+				.map(WordService::toWordOut)
+				.toList();
+	}
+
 	public WordOut create(WordIn wi) {
 		Word word = toWord(wi);
 		word.setVersion(LocalDateTime.now());
