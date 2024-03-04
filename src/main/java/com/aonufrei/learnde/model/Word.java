@@ -20,8 +20,8 @@ public class Word {
 	@Column(name = "topic_id")
 	private Long topicId;
 
-	@OneToOne
-	@JoinColumn(name = "topic_id", insertable = false, updatable = false)
+	@ManyToOne
+	@JoinColumn(name = "topic_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Topic topic;
 
 	private String text;

@@ -1,12 +1,10 @@
 package com.aonufrei.learnde.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +21,9 @@ public class Topic {
 	private String name;
 
 	private String description;
+
+	@OneToMany(mappedBy = "topicId", targetEntity = Word.class, cascade = CascadeType.ALL)
+	private List<Word> words;
 
 	private LocalDateTime version;
 

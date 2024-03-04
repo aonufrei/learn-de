@@ -275,6 +275,37 @@ class LearnDeApplicationTests {
 	}
 
 	@Test
+	public void testDeleteWordsCascade() throws Exception {
+		var integrationUtils = new IntegrationTestUtils(mapper, TOPIC_ROOT_PATH,
+				"Bearer " + authService.createToken(testAdmin.getUsername()));
+
+		var topicIn1 = new TopicIn("Topic 1", "First topic");
+		var topic1 = topicService.create(topicIn1);
+
+		var word1 = new WordIn(topic1.id(), "Katze", Article.DIE, "The Cat");
+		var word2 = new WordIn(topic1.id(), "Hund", Article.DER, "The Dog");
+		var word3 = new WordIn(topic1.id(), "Tisch", Article.DER, "The Table");
+		var word4 = new WordIn(topic1.id(), "Stuhl", Article.DER, "The Chair");
+
+		WordOut wordOut1 = wordService.create(word1);
+		WordOut wordOut2 = wordService.create(word2);
+		WordOut wordOut3 = wordService.create(word3);
+		WordOut wordOut4 = wordService.create(word4);
+
+		mvc.perform(integrationUtils.getDeleteRequest(topic1.id()))
+				.andExpect(status().isOk())
+				.andExpect(content().string("true"));
+
+		System.out.println(wordService.getByTopic(topic1.id()));
+
+		Assertions.assertFalse(wordService.exists(wordOut1.id()));
+		Assertions.assertFalse(wordService.exists(wordOut2.id()));
+		Assertions.assertFalse(wordService.exists(wordOut3.id()));
+		Assertions.assertFalse(wordService.exists(wordOut4.id()));
+	}
+
+
+	@Test
 	public void testAuth() throws Exception {
 		var integrationUtils = new IntegrationTestUtils(mapper, WORD_ROOT_PATH, "");
 		var user1 = new UserIn("Testtttt", "trasdfasd", "21sd3wefsdff");

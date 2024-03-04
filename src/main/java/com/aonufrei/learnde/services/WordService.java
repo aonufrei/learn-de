@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +23,10 @@ public class WordService {
 
 	public WordService(WordRepository wordRepository) {
 		this.wordRepository = wordRepository;
+	}
+
+	public boolean exists(Long id) {
+		return wordRepository.existsById(id);
 	}
 
 	public List<WordOut> getAll() {
