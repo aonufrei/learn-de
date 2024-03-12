@@ -33,7 +33,6 @@ public class SecurityConfig {
 		http.authenticationManager(authManager);
 		http.csrf(AbstractHttpConfigurer::disable);
 		http.cors(c -> c.configurationSource(corsConfigurationSource()));
-//		http.cors(Customizer.withDefaults());
 		http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.httpBasic(AbstractHttpConfigurer::disable);
 		http.formLogin(AbstractHttpConfigurer::disable);
@@ -52,7 +51,7 @@ public class SecurityConfig {
 
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+		configuration.setAllowedOrigins(List.of("*"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
