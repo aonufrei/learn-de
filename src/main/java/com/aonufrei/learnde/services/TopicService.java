@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class TopicService {
@@ -28,6 +31,12 @@ public class TopicService {
 		return topicRepository.findAll().stream()
 				.map(TopicService::toTopicOut)
 				.toList();
+	}
+
+	public List<TopicOut> getShuffled(Integer seed) {
+		List<TopicOut> all = new ArrayList<>(getAll());
+		Collections.shuffle(all, new Random(seed));
+		return all;
 	}
 
 	public Topic getModelById(Long id) {

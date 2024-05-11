@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("api/v1/topics")
 public class TopicRestController {
@@ -39,6 +38,12 @@ public class TopicRestController {
 	private List<WordOut> getWordsOfTopic(@PathVariable("id") Long id) {
 		return wordService.getByTopic(id);
 	}
+
+	@GetMapping("{id}/words/shuffled")
+	private List<WordOut> getShuffledWordsOfTopic(@PathVariable("id") Long id, @RequestParam("seed") Integer seed) {
+		return wordService.getShuffledByTopic(id, seed);
+	}
+
 
 	@PostMapping
 	private TopicOut create(@RequestBody TopicIn topicIn) {

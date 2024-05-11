@@ -9,10 +9,12 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class WordService {
@@ -47,6 +49,12 @@ public class WordService {
 		return wordRepository.findAllByTopicId(topicId).stream()
 				.map(WordService::toWordOut)
 				.toList();
+	}
+
+	public List<WordOut> getShuffledByTopic(Long topicId, Integer seed) {
+		var words = new ArrayList<>(getByTopic(topicId));
+		Collections.shuffle(words, new Random(seed));
+		return words;
 	}
 
 	public WordOut create(WordIn wi) {
