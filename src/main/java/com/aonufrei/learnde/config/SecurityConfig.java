@@ -39,8 +39,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authz -> authz
 				.requestMatchers(HttpMethod.GET, "/health").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/register").permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/v1/topics","/api/v1/topics/*/words", "/api/v1/topics/*/words/shuffled").permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/v1/words").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/v1/topics", "/api/v1/topics/*/words/shuffled").permitAll()
 				.anyRequest().hasRole("ADMIN")
 		);
 		http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
