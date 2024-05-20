@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidationService {
 
-	private static final StringRange TOPIC_NAME_RANGE = new StringRange(5, 30);
+	private static final StringRange TOPIC_NAME_RANGE = new StringRange(2, 30);
 	private static final StringRange WORD_TEXT_RANGE = new StringRange(1, 30);
 	private static final StringRange WORD_TRANSLATION_RANGE = new StringRange(1, 30);
 
